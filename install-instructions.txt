@@ -1,0 +1,35 @@
+Ubuntu ODBC Install 
+
+verify if unixODBC is installed 
+
+Which odbcinst 
+
+Which isql 
+
+conda install -c conda-forge unixodbc 
+
+ 
+
+sudo apt update && sudo apt upgrade 
+
+sudo apt install build-essential -y 
+
+Install the Microsoft ODBC driver for SQL Server (Linux) - version 18 works with Azure SQL, version 17 is needed for busche-sql. 
+
+Configure the DSN for MSSQL brentgroves/pyodbc-test has /etc/odbc.ini for the system DSN and /usr/oaodbc81/odbc64.ini for the user DSN. 
+
+Install the PROGRESS_DATADIRECT_OPENACCESS_OAODBC_8.1.0.HOTFIX_LINUX_64.tar Plex ODBC 64 Linux driver. 
+
+Install ksh 
+
+ksh unixpi.ksh 
+
+Install will ask you for the following which I got from the linux drivers from Plex. (KEY = 35057920,COMPANY = BPG-IN,SERIAL = 004193623) 
+
+Then update the /etc/odbc.ini and /usr/oaodbc81/odbc64.ini files with what is stored in the pyodbc-test repository. 
+
+Source oaodbc64.sh script which exports common unixODBC environmental variables. 
+
+run odbcinst –j to verify the environmental variables were set. 
+
+Run python odbc-dsn-plextest.py to verify connection is ok. 
