@@ -24,29 +24,24 @@ def print_to_stderr(*a):
 try:
     # print(f"Name of the script      : {sys.argv[0]=}")
     # print(f"Arguments of the script : {sys.argv[1:]=}")
-    # # print(sys.argv[1])
+    # print(sys.argv[1])
     # start_time = datetime.now()
     # end_time = datetime.now()
     # params = (sys.argv[1])
-    # # print("params=",params)
-    # # print(type(params)) 
-    # # params2 = ("123681,300758,310507,306766,300757")
-    # params = (sys.argv[1])
     # print("params=",params)
     # print(type(params)) 
-    # txt = "delete from Scratch.accounting_account_06_03 where pcn in ({dellist:s})"
-    # print(txt.format(dellist = params))
+    # params2 = ("123681,300758,310507,306766,300757")
+    # print("params2=",params2)
+    # print(type(params2)) 
     # sys.exit(0)
     params = (sys.argv[1])
-
 
 # https://geekflare.com/calculate-time-difference-in-python/
     start_time = datetime.now()
     end_time = datetime.now()
 
     current_time = start_time.strftime("%H:%M:%S")
-    # print("Current Time =", current_time)    
-    print(f"Current Time: {current_time=}")
+    print("Current Time =", current_time)    
     ret = 0
     # https://docs.microsoft.com/en-us/sql/connect/python/pyodbc/step-1-configure-development-environment-for-pyodbc-python-development?view=sql-server-ver15
     username = 'mg.odbcalbion' 
@@ -67,37 +62,22 @@ try:
     cursor.execute("{call sproc300758_11728751_1978024 (?)}", params)
     rows = cursor.fetchall()
     cursor.close()
-    fetch_time = datetime.now()
-    tdelta = fetch_time - start_time 
-    print(f"fetch_time={tdelta}") 
+    conn.close()
 
     username = 'mgadmin' 
     password = 'WeDontSharePasswords1!' 
     conn2 = pyodbc.connect('DSN=dw;UID='+username+';PWD='+ password + ';DATABASE=mgdw')
 
     cursor2 = conn2.cursor()
-    # https://code.google.com/archive/p/pyodbc/wikis/GettingStarted.wiki
-    txt = "delete from Scratch.accounting_account_06_03 where pcn in ({dellist:s})"
-    # https://github.com/mkleehammer/pyodbc/wiki/Cursor
-    # The return value is always the cursor itself:
-    rowcount=cursor2.execute(txt.format(dellist = params)).rowcount
-    print(f"{txt} - rowcount={rowcount}")
-    print(f"{txt} - messages={cursor2.messages}")
-    # https://github.com/mkleehammer/pyodbc/wiki/Cursor
-    # https://github.com/mkleehammer/pyodbc/wiki/Features-beyond-the-DB-API#fast_executemany
-    # https://towardsdatascience.com/how-i-made-inserts-into-sql-server-100x-faster-with-pyodbc-5a0b5afdba5
     im2='''insert into Scratch.accounting_account_06_03
     values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)''' 
-    # rec = [(123681,629753,'10000-000-00000','Cash - Comerica General',0,'Asset',0,'category-name-legacy','cattypeleg',0,'subcategory-name-legacy','subcattleg',0,201604)]
-    # print(im2)
-    cursor2.fast_executemany = True
-    cursor2.executemany(im2,rows)
-    print(f"{im2} - rowcount={rowcount}")
-    print(f"{im2} - messages={cursor2.messages}")
+    rec = [(123681,629753,'10000-000-00000','Cash - Comerica General',0,'Asset',0,'category-name-legacy','cattypeleg',0,'subcategory-name-legacy','subcattleg',0,201604)]
+    print(im2)
+    # cursor2.executemany(im2,rows)
     # cursor2.executemany(im2,rec)
     # print("Length=% s" % len(list))
     # print("cursor.rowcount=%s" % cursor.rowcount)
-    # cursor2.executemany(im2,rows)
+    cursor2.executemany(im2,rows)
 
 
     # if 'cursor' in globals():
@@ -145,14 +125,17 @@ except pyodbc.Error as ex:
 finally:
     end_time = datetime.now()
     tdelta = end_time - start_time 
-    print(f"total time: {tdelta}") 
-    # print(type(tdelta)) 
-    if 'conn' in globals():
-        conn.close()
-    #   sys.exit(ret)
+    print(tdelta) 
+    print(type(tdelta)) 
+
+    # if 'cursor' in globals():
+    #     # cursor.commit()
+    #     cursor.close()
+    # if 'conn' in globals():
+    #     conn.close()
+    # #   sys.exit(ret)
     if 'cursor2' in globals():
         cursor2.commit()
         cursor2.close()
     if 'conn2' in globals():
         conn2.close()
-    # sys.exit(ret)
